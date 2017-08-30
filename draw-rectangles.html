@@ -14,38 +14,43 @@
 }
 </style>
 <script type="text/javascript">
-window.onmousedown = function(mouseDownEvent) {
-    var mouseX = mouseDownEvent.clientX;
-    var mouseY = mouseDownEvent.clientY;
-    console.log(['init', mouseX, mouseY]);
-    window.onmousemove = function(mouseMoveEvent) {
-        console.log([mouseMoveEvent.clientX, mouseMoveEvent.clientY]);
-        window.onmouseup = function(mouseUpEvent) {
-            console.log('mouseup');
-            var newDiv = document.createElement('div');
-            newDiv.className = 'rectangle';
-            var mouseEndX = mouseUpEvent.clientX;
-            var mouseEndY = mouseUpEvent.clientY;
-            var dX, dY;
-            if (mouseEndX < mouseX) {
-                newDiv.style.left = mouseEndX + 'px';
-                newDiv.style.width = String(mouseX - mouseEndX) + 'px';
-            } else {
-                newDiv.style.left = mouseX + 'px';
-                newDiv.style.width = String(mouseEndX - mouseX) + 'px';
-            }
-            if (mouseEndY < mouseY) {
-                newDiv.style.top = mouseEndY + 'px';
-                newDiv.style.height = String(mouseY - mouseEndY) + 'px';
-            } else {
-                newDiv.style.top = mouseY + 'px';
-                newDiv.style.height = String(mouseEndY - mouseY) + 'px'; 
-            }
-            window.onmousemove = undefined;
-            window.onmouseup = undefined;
-            document.body.appendChild(newDiv);
-            console.log(newDiv);
+window.onmousedown = function(mouseStartEvent) {
+    var mouseX = mouseStartEvent.clientX;
+    var mouseY = mouseStartEvent.clientY;
+    /* We now know that the user is interested in doing
+       a click-drag event. So when they release the mouse,
+       the drag is done. window.onmousemove could be used
+       for an animation of sorts, but for this example, it
+       doesn't need to be used.
+    */
+    window.onmouseup = function(mouseEndEvent) {
+        /* Create the new div element to put on the page */
+        var newDiv = document.createElement('div');
+        /* Give it the css class specified in the CSS above */
+        newDiv.className = 'rectangle';
+        /* Store the mouseup coordinates on the page */
+        var mouseEndX = mouseEndEvent.clientX;
+        var mouseEndY = mouseEndEvent.clientY;
+        var dX, dY;
+        /* calculate where the top-left corner needs to be.  */
+        if (mouseEndX < mouseX) { 
+            newDiv.style.left = mouseEndX + 'px';
+            newDiv.style.width = String(mouseX - mouseEndX) + 'px';
+        } else {
+            newDiv.style.left = mouseX + 'px';
+            newDiv.style.width = String(mouseEndX - mouseX) + 'px';
         }
+        if (mouseEndY < mouseY) {
+            newDiv.style.top = mouseEndY + 'px';
+            newDiv.style.height = String(mouseY - mouseEndY) + 'px';
+        } else {
+            newDiv.style.top = mouseY + 'px';
+            newDiv.style.height = String(mouseEndY - mouseY) + 'px'; 
+        }
+        /* unbind this event handler, incase it needs to be used by 
+           something else */
+        window.onmouseup = undefined;
+        document.body.appendChild(newDiv);
     }
 }
 </script>
