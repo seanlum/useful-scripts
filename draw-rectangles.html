@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drawing Rectanles</title>
+</head>
+<body>
+<style type="text/css">
+.rectangle {
+    position: absolute;
+    margin: 0; padding: 0;
+    display: block;
+    content: '';
+    background: rgba(0,0,0, 0.2);
+}
+</style>
+<script type="text/javascript">
+window.onmousedown = function(mouseDownEvent) {
+    var mouseX = mouseDownEvent.clientX;
+    var mouseY = mouseDownEvent.clientY;
+    console.log(['init', mouseX, mouseY]);
+    window.onmousemove = function(mouseMoveEvent) {
+        console.log([mouseMoveEvent.clientX, mouseMoveEvent.clientY]);
+        window.onmouseup = function(mouseUpEvent) {
+            console.log('mouseup');
+            var newDiv = document.createElement('div');
+            newDiv.className = 'rectangle';
+            var mouseEndX = mouseUpEvent.clientX;
+            var mouseEndY = mouseUpEvent.clientY;
+            var dX, dY;
+            if (mouseEndX < mouseX) {
+                newDiv.style.left = mouseEndX + 'px';
+                newDiv.style.width = String(mouseX - mouseEndX) + 'px';
+            } else {
+                newDiv.style.left = mouseX + 'px';
+                newDiv.style.width = String(mouseEndX - mouseX) + 'px';
+            }
+            if (mouseEndY < mouseY) {
+                newDiv.style.top = mouseEndY + 'px';
+                newDiv.style.height = String(mouseY - mouseEndY) + 'px';
+            } else {
+                newDiv.style.top = mouseY + 'px';
+                newDiv.style.height = String(mouseEndY - mouseY) + 'px'; 
+            }
+            window.onmousemove = undefined;
+            window.onmouseup = undefined;
+            document.body.appendChild(newDiv);
+            console.log(newDiv);
+        }
+    }
+}
+</script>
+</body>
+</html>
