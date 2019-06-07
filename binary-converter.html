@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<head>
+<title>Binary Calculator</title>
+</head>
+<body>
+<form class="output-view">
+  <h3>Binary Bit-Width</h3>
+    <input type="number" oninput="doBin2Array()" id="bin2arr-width" value="8" />
+  <h3>Binary Number</h3>
+    <textarea oninput="doBin2Array()" id="bin2arr-number">01011011</textarea>
+  <h3>Binary to Integers output</h3>
+    <textarea id="bin2arr-output"></textarea>
+</form>
+
+<form class="output-view">
+  <h3>Bit Width</h3>
+    <input type="number" oninput="doI2Bin()" id="i2bin-width" value="8" />
+  <h3>Number to Convert To Binary</h3>
+    <textarea oninput="doI2Bin()" id="i2bin-number">11</textarea>
+  <h3>Binary to Integers output</h3>
+    <textarea id="i2bin-output"></textarea>
+</form>
+<style type="text/css">
+  html::after {
+    display: block;
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    background: linear-gradient(to bottom right, #00AEFF,
+    #5544EA, #0033A1, #001183);
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+  }
+  .output-view {
+    position: relative;
+    float: left;
+    font-size:5rem;
+    width: 46%;
+    padding: 1rem;
+    box-shadow: 1px 0 2px rgba(0,0,0,0.6);
+    background: linear-gradient(to bottom left,
+      rgba(255,255,255,0.4),
+      rgba(255,255,255,0.4),
+      rgba(255,255,255,0.2),
+      rgba(255,255,255,0.3));
+    margin: 1%;
+
+  }
+  .output-view::after {
+    clear: both;
+    display: block;
+    content: '';
+  }
+  .output-view input,
+  .output-view textarea {
+    background: rgba(255,255,255,0.4);
+    width: 95%;
+    height: auto;
+    clear: both;
+    position: relative;
+    word-break: break-all;
+    font-weight: bold;
+    font-size: 2rem;
+    text-shadow: 0 0 3px #fff;
+    color: #111;
+    box-shadow: 1px 0 2px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255, 0.4);
+    padding: 0.5rem
+  }
+  h3 {
+    font-size: 1.5rem;
+    font-family: sans-serif;
+    text-shadow:  0 0 2px #000;
+    color: white;
+    margin: 0.5rem 0;
+    padding: 0;
+  }
+</style>
+<script type="text/javascript">
+  /*
+     Written by seanlum
+     GitHub: https://www.github.com/seanlum/
+  */
+  function bin2Array(binaryString, bitWidth) {
+    binaryString = String(binaryString).split(/[^01]+/).join('');
+    bitWidth = Number(bitWidth);
+    function bin2num(binaryNumber) {
+      return binaryNumber.split('')
+      .map(function(bit, bitIndex, numberOrigin) {
+        return Number(bit);
+      })
+      .reduce(function(accumulator,
+          currentValue, currentIndex, origin) {
+            if (currentValue === 1) {
+              return Math.pow(2, currentIndex) + accumulator;
+            } else {
+              return accumulator;
+            }
+      });
+    }
+
+    if (binaryString.length >= bitWidth) {
+      let outNumbers = [];
+      let processString = binaryString.split('').reverse().join('');
+      for(let bitPosition = 0; bitPosition < processString.length; bitPosition += bitWidth) {
+        outNumbers.push(
+          bin2num(String(processString.substring(bitPosition, bitPosition + bitWidth)))
+        );
+      }
+      return outNumbers.reverse();
+    } else {
+      return bin2num(binaryString.split('').reverse().join(''));
+    }
+  }
+
+  function i2bin(number, bitWidth) {
+    let outString = '';
+    let remainder = Number(number);
+    for(;bitWidth > 0;bitWidth--) {
+      currentPlace = Math.pow(2, bitWidth);
+      lowerPlace = Math.pow(2, bitWidth - 1);
+  /*
+      128  64  32  16  8  4  2  1
+
+      128 > 7, 64 > 7, 32 > 7, 16 > 7, 8 > 7  #  note 4 !> 7  00000
+      bitWidth                                #               2^3 = 8
+      8 > 7, 4 <= 7, 7 - 4 = 3                #               000001
+      bitWidth--                              #               2^2 = 4
+      4 > 3, 2 <= 3, 3 - 2 = 1                #               0000011
+      bitWidth--                              #               2^1 = 2
+      2 > 1, 1 <= 1, 1 - 1 = 0                #               00000111
+      bitWidth--                              #               2^0 = 1
+      1 > 0... loop breaks, limit reached     #
+  */
+      if ((currentPlace > remainder) && (lowerPlace <= remainder)) {
+           remainder -= lowerPlace;
+           outString += '1';
+
+      } else {
+          outString += '0';
+      }
+    }
+    return outString;
+  }
+
+
+  function doI2Bin() {
+    let calcView = document.getElementById('i2bin-output');
+    let binString = document.getElementById('i2bin-number');
+    let binWidth = document.getElementById('i2bin-width');
+    let result = i2bin(binString.value, binWidth.value);
+    calcView.innerHTML = result.toString();
+  }
+
+  function doBin2Array() {
+    let calcView = document.getElementById('bin2arr-output');
+    let binString = document.getElementById('bin2arr-number');
+    let binWidth = document.getElementById('bin2arr-width');
+    let result = bin2Array(binString.value, binWidth.value);
+    calcView.innerHTML = result.toString();
+  }
+
+  document.addEventListener('DOMContentLoaded', function(event) {
+    doI2Bin();
+    doBin2Array();
+  });
+</script>
+</body>
+</html>
