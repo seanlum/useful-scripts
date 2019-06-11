@@ -1,90 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
 <title>Binary Calculator</title>
 </head>
 <body>
-<form class="output-view">
-  <h3>Binary Bit-Width</h3>
+<div class="output-view">
+  <span class="control-title">Binary Bit-Width</span>
     <input type="number" oninput="doBin2Array()" id="bin2arr-width" value="8" />
-  <h3>Binary Number</h3>
+  <span class="control-title">Binary Number</span>
     <textarea oninput="doBin2Array()" id="bin2arr-number">01011011</textarea>
-  <h3>Binary to Integers output</h3>
+  <span class="control-title">Binary to Integers output</span>
     <textarea id="bin2arr-output"></textarea>
-</form>
+</div>
 
-<form class="output-view">
-  <h3>Bit Width</h3>
+<div class="output-view">
+  <span class="control-title">Bit Width</span>
     <input type="number" oninput="doI2Bin()" id="i2bin-width" value="8" />
-  <h3>Number to Convert To Binary</h3>
+  <span class="control-title">Number to Convert To Binary</span>
     <textarea oninput="doI2Bin()" id="i2bin-number">11</textarea>
-  <h3>Binary to Integers output</h3>
+  <span class="control-title">Binary to Integers output</span>
     <textarea id="i2bin-output"></textarea>
-</form>
-<style type="text/css">
-  html::after {
-    display: block;
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    z-index: 1;
-    background: linear-gradient(to bottom right, #00AEFF,
-    #5544EA, #0033A1, #001183);
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    position: relative;
-    z-index: 2;
-    margin: 0;
-    padding: 0;
-  }
-  .output-view {
-    position: relative;
-    float: left;
-    font-size:5rem;
-    width: 46%;
-    padding: 1rem;
-    box-shadow: 1px 0 2px rgba(0,0,0,0.6);
-    background: linear-gradient(to bottom left,
-      rgba(255,255,255,0.4),
-      rgba(255,255,255,0.4),
-      rgba(255,255,255,0.2),
-      rgba(255,255,255,0.3));
-    margin: 1%;
+</div>
 
+
+<div class="output-view">
+  <span class="control-title">LAN IP to Binary</span>
+  <textarea oninput="doIP2bin()" id="i2bin-ip-num">192.168.1.1</textarea>
+  <span class="control-title">Binary to Integers output</span>
+  <textarea id="i2bin-ip-output"></textarea>
+</div>
+
+<div class="output-view">
+  <span class="control-title">CIDR Notation</span>
+  <textarea oninput="doCIDR2Bin()" id="cidr2bin-network-id">192.168.1.1/24</textarea>
+  <span class="control-title">Network ID Information</span>
+  <textarea id="cidr2bin-network-id-info" style="height: 400px;"></textarea>
+</div>
+
+<style type="text/css">
+body {
+  background: forestgreen;
+  margin: 0;
+  padding: 0;
+}
+.output-view {
+  position: relative;
+  float: left;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  width: 400px;
+  padding: 25px;
+  margin: 10px 5px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  background: linear-gradient(to bottom left,
+    rgba(255,255,255,0.4),
+    rgba(255,255,255,0.4),
+    rgba(255,255,255,0.2),
+    rgba(255,255,255,0.3));
+}
+
+.output-view input,
+.output-view textarea {
+  background: rgba(255,255,255,0.4);
+  word-break: break-all;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-shadow: 0 0 3px #fff;
+  color: #111;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255, 0.4);
+  position: relative;
+  clear: both;
+  width: 94%;
+  padding: 2%;
+  display: block;
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.output-view textarea {
+  height: 100px;
+}
+
+.control-title {
+  display: block;
+  margin-top: 0 0 1rem 0;
+}
+
+@media all and (max-width: 1000px) {
+  .output-view {
+    width: 78%;
+    padding: 5%;
+    margin: 5%;
   }
-  .output-view::after {
-    clear: both;
-    display: block;
-    content: '';
-  }
-  .output-view input,
-  .output-view textarea {
-    background: rgba(255,255,255,0.4);
-    width: 95%;
-    height: auto;
-    clear: both;
-    position: relative;
-    word-break: break-all;
-    font-weight: bold;
-    font-size: 2rem;
-    text-shadow: 0 0 3px #fff;
-    color: #111;
-    box-shadow: 1px 0 2px rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255, 0.4);
-    padding: 0.5rem
-  }
-  h3 {
-    font-size: 1.5rem;
-    font-family: sans-serif;
-    text-shadow:  0 0 2px #000;
-    color: white;
-    margin: 0.5rem 0;
-    padding: 0;
-  }
+}
 </style>
 <script type="text/javascript">
   /*
@@ -170,9 +182,78 @@
     calcView.innerHTML = result.toString();
   }
 
+  function doIP2bin() {
+    let calcView = document.getElementById('i2bin-ip-output');
+    let binString = document.getElementById('i2bin-ip-num');
+    let numbers = binString.value.split(/[^0-9]/).map(function(num, index, origin) {
+      return i2bin(num, 8);
+    }).join('.');
+    calcView.innerHTML = numbers.toString();
+  }
+
+  function doCIDR2Bin() {
+    let calcView = document.getElementById('cidr2bin-network-id-info');
+    let cidrString = document.getElementById('cidr2bin-network-id');
+    let info = cidrString.value.split(/\//);
+    let defaultSubnetMask = '';
+    let IPClass = '';
+    let binaryIP = info[0].split(/[^0-9]/).map(function(num, index, origin) {
+      if (index === 0) {
+        if ((1 <= num) && (num <= 126)) {
+          defaultSubnetMask = '255.0.0.0';
+          IPClass = 'A';
+        } else if ((128 <= num) && (num <= 191)) {
+          defaultSubnetMask = '255.255.0.0';
+          IPClass = 'B';
+        } else if ((192 <= num) && (num <= 223)) {
+          defaultSubnetMask = '255.255.255.0';
+          IPClass = 'C';
+        } else if ((224 <= num) && (num <= 239)) {
+          defaultSubnetMask = '---';
+          IPClass = 'D';
+        } else if ((240 <= num) && (num <= 255)) {
+          defaultSubnetMask = '---';
+          IPClass = 'E';
+        } else {
+          defaultSubnetMask = '---';
+          IPClass = 'X';
+        }
+      }
+      return i2bin(num, 8);
+    }).join('.');
+
+    let subnetMask = Number(info[1]);
+
+    let binaryNetmaskString = '';
+    for (let notation=1; notation <= 32; notation++) {
+      if (notation > subnetMask) {
+        binaryNetmaskString += '0';
+      } else {
+        binaryNetmaskString += '1';
+      }
+      if (((notation % 8) === 0) && notation < 32) {
+        binaryNetmaskString += '.';
+      }
+    }
+
+    let netmaskString = binaryNetmaskString.split('.').map(function(binNum, index, origin) {
+      return bin2Array(binNum, 8);
+    }).join('.');
+
+    calcView.innerHTML = 'Network Class: ' + IPClass +
+    '\nDefault Netmask: ' + defaultSubnetMask +
+    '\n\nNetmask: ' +  netmaskString +
+    '\nNetwork Bits: ' + (Number(info[1])) +
+    '\nHost Bits: ' + (32 - Number(info[1])) +
+    '\n\nNetmask (binary):\n' + binaryNetmaskString +
+    '\nIP (binary):\n' + binaryIP;
+  }
+
   document.addEventListener('DOMContentLoaded', function(event) {
     doI2Bin();
     doBin2Array();
+    doIP2bin();
+    doCIDR2Bin();
   });
 </script>
 </body>
