@@ -1,0 +1,60 @@
+#!/usr/bin/node
+/*
+ * Written by: seanlum
+ * Version: 1.0.0 
+ * Version Date: 08-17-2019
+ */
+let fs = require('fs')
+let separator
+let argText
+
+function getSlice(str) {
+	return str.slice(str.indexOf('=') + 1, str.length)
+}
+
+function getHelp() {
+	let help = '';
+	help += '--------------------------------------------------------\n\r'
+	help += 'pretty-json v1.0.0\n\r'
+	help += 'Options \n\r';
+	help += '    -t=\'{"json":"content"}\'\n\r';
+	help += '    -s=\'separator\'\n\r';
+	help += '      Examples:\n\r';
+	help += '          -s=$\'\\t\'\n\r';
+	help += '          -s=$\'  \'\n\r';
+	help += '\n\r';
+	help += 'If -t is not specified, pretty-json reads from stdin\n\r'
+	help += '--------------------------------------------------------\n\r'
+	fs.writeSync(1, help, null, help.length)
+}
+
+function isHelpIsh(text) {
+	return new RegExp(/h(e(l(p)?)?)?$/).test(text)
+}
+
+process.argv.map((arg, argi, args) => {
+	if (arg.startsWith('-s')) {
+		separator = getSlice(arg)
+	} else if (arg.startsWith('-t')) {
+		argText = getSlice(arg)
+	} else if (arg.startsWith('-h') && isHelpIsh(getSlice(arg))) {
+		getHelp()
+	}
+})
+
+function writeOut(text) {
+	let output_text;
+	if (undefined !== separator) {
+		output_text = JSON.stringify(JSON.parse(text), null, separator) + '\n\r'
+	} else {
+		output_text = JSON.stringify(JSON.parse(text), null, '  ') + '\n\r'
+	}
+	fs.writeSync(1, output_text, null, output_text.length)
+}
+
+if (undefined === argText) {
+	let input_text = fs.readFileSync(0, 'utf-8')
+	writeOut(input_text)
+} else {
+	writeOut(argText);
+}
