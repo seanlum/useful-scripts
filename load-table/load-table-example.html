@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>CSV Style Data Filter</title>
+</head>
+<body>
+
+<!-- Target DOM Elements -->
+<input type="text" id="search-field" placeholder="Search here!" />
+<table id="target-table"></table>
+
+<!-- This is where the re-usable code is -->
+<script type="text/javascript" src="load-table.js"></script>
+
+<!-- This is partial data from 100 movies in the tmdb-5000-movie-dataset -->
+<script type="text/javascript" src="load-table-test-movies.js"></script>
+
+<!-- This is all test code -->
+<script type="text/javascript">
+    let targetTable = document.getElementById('target-table');
+    let headers =  ['Budget', 'Original Language', 'Overview', 'Release Date'];
+    let data = movies;
+    loadTable(targetTable, data, headers);
+
+    let searchField = document.getElementById('search-field');
+    searchField.addEventListener('input', function(inputEvent) {
+        if (searchField.value !== '') {
+            let searchExpression = '(' +                                    // Start the group
+                String(searchField.value)                                   // Get the field input string
+                    .toLowerCase().split(new RegExp('[\\ \\t\\r\\n]+'))     // Split on whitespace
+                    .filter(function(result) { return result !== ''; })     // remove empty spaces and empty strings
+                    .map(function(word) { return  word })                   // For per-word modifications
+                    .join('|')                                              // join words with '|' for RegExp group separator
+                + ')'                                                       // end group match
+                + '[a-z0-9\\ \\t\\r\\n]?';                                  // add impartial match
+
+            searchExpression = new RegExp(searchExpression, 'gi');          // Make global and case-insensitive
+
+            loadTable(targetTable, data, headers, searchExpression);
+        } else {
+            loadTable(targetTable, data, headers);
+        }
+    })
+</script>
+
+<!-- Custom Browser Styling -->
+<style type="text/css">
+    body {
+        font-family: sans-serif;
+        font-size: 0.95rem;
+    }
+    #search-field { 
+        display: block;
+        width: 95%; 
+        margin: 1rem auto; 
+        background: #333;
+        color: #fff;
+        border: 1px solid #000;
+        padding: 0.5rem;
+    }
+    table thead {
+        background: #333;
+        color: #fff;
+    }
+    table td {
+        padding: 0.5rem;
+        line-height: 1.5rem;
+        letter-spacing: 0.01rem;
+    }
+    table tr:nth-child(1n) {
+        background: #e0e0e0;
+    }
+    table tr:nth-child(2n) {
+        background: #f0f0f0;
+    }
+    table > tr > td:nth-child(1) {
+        font-weight: bold;
+    }
+    table code {
+        background: #505050;
+        border: 1px solid #303030;
+        color: #f0f0f0;
+        padding: 0.05rem 0.5rem;
+        border-radius: 0.25rem;
+    }
+</style>
+</body>
+</html>
