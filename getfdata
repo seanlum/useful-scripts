@@ -1,0 +1,30 @@
+#!/usr/bin/bash
+# Written by https://github.com/seanlum
+# Part of https://github.com/seanlum/useful-scripts
+current_dir=$1
+IFS=$'\n'
+for filename in `find -L "$current_dir" -type f | awk '{ print $0 }'`
+do
+	echo "======================="
+	fsize=`du "$filename" -d 0 -h | awk '{ print $1 }'`
+	ftype=`file "$filename"`
+	finode=`ls -i $filename | awk '{ print $1}'`
+	fmimetype=`file --mime-type "$filename" | awk --field-separator=':' '{ print $2 }'`
+	fsum=`sha256sum "$filename" | awk '{ print $1 }'`
+	fshasum=`sha1sum "$filename" | awk '{ print $1 }'`
+	fmd5sum=`md5sum "$filename" | awk '{ print $1 }'`
+	echo "File: $ftype"	
+	echo "File Size: $fsize" 
+	echo "Inode: $finode"
+	echo "Mime-Type: $fmimetype"
+	echo "sha256sum: $fsum"
+	echo "sha1sum: $fshasum" 
+	echo "md5sum: $fmd5sum"
+	echo ""
+	stat "$filename"
+	echo ""
+	getfacl "$filename" -p
+	exiftool "$filename"
+	echo ""
+done
+
