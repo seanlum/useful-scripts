@@ -14,6 +14,9 @@
         }
 
         function createTextNodeSearch(config) {
+            if (window.textNodeSearch[config.resultGroup] === undefined) {
+                window.textNodeSearch[config.resultGroup] = {}
+            }
             window.textNodeSearch[config.resultGroup].config = config;
             this.defaultPattern = 'change';
             this.searchPattern = new RegExp(config.searchPattern ? config.searchPattern : this.defaultPattern, 'g');

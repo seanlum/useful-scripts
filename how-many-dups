@@ -63,11 +63,11 @@ for name in list_two_entities:
 		pass
 
 
-print('List (' + file_a + ') entries: ' + str(len(list_one_entities)))
-print('List (' + file_b + ') entries: ' + str(len(list_two_entities)))
+print('List (' + file_a + ') entries: ' + str(len(list_one_entities)-1))
+print('List (' + file_b + ') entries: ' + str(len(list_two_entities)-1))
 print('Searched for entries from ' + file_b + ' already in ' + file_a)
 print('Separated file contents with: ' + separator)
-print('Duplicates:' + str(len(duplicates)))
+print('Duplicates: ' + str(len(duplicates)-1))
 if show_duplicates:
 	for dup in duplicates:
 		print(dup)
