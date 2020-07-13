@@ -82,7 +82,7 @@
                 let results = undefined;
                 while ((results = document.getElementsByClassName(config.resultClass)).length > 0) {
                     for (let resultIndex = 0; resultIndex < results.length; resultIndex++) {
-                        let replacementNode = document.createTextNode(results[resultIndex].innerText);
+                        let replacementNode = document.createTextNode(results[resultIndex].innerHTML);
                         results[resultIndex].parentNode.replaceChild(replacementNode, results[resultIndex]);
                     }
                 }
