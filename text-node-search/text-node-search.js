@@ -89,8 +89,19 @@
                 results = undefined;
                 while ((results = document.getElementsByTagName(config.tempElementType)).length > 0) {
                     for (let resultIndex = 0; resultIndex < results.length; resultIndex++) {
-                        let replacementNode = document.createTextNode(results[resultIndex].innerHTML);
-                        results[resultIndex].parentNode.replaceChild(replacementNode, results[resultIndex]);
+                        let childrenNodes = Array.from(results[resultIndex].childNodes).map(function(node) {
+                            return node.nodeType;
+                        }).filter(function(number) {
+                            if (number) {
+                                return number;
+                            }
+                        });
+                        if (childrenNodes.indexOf(1) === -1) {
+                            replacementNode = document.createTextNode(results[resultIndex].innerHTML);
+                            results[resultIndex].parentNode.replaceChild(replacementNode, results[resultIndex]);
+                        } else {
+                            results[resultIndex].outerHTML = results[resultIndex].innerHTML;
+                        }
                     }
                 }
             }
